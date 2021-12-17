@@ -13,7 +13,10 @@ import (
 type Source interface {
 	Source() string
 	Namespace() string
+	Type() string
+	Index() interface{}
 	InternalName() string
+	Address() string
 }
 
 type SerializableSource struct {
@@ -25,11 +28,13 @@ type SerializableSource struct {
 type TerraformStateSource struct {
 	State  string
 	Module string
+	Ty     string
 	Name   string
+	Idx    interface{}
 }
 
-func NewTerraformStateSource(state, module, name string) *TerraformStateSource {
-	return &TerraformStateSource{state, module, name}
+func NewTerraformStateSource(state, module, ty, name string, index interface{}) *TerraformStateSource {
+	return &TerraformStateSource{state, module, ty, name, index}
 }
 
 func (s *TerraformStateSource) Source() string {
@@ -40,8 +45,29 @@ func (s *TerraformStateSource) Namespace() string {
 	return s.Module
 }
 
+func (s *TerraformStateSource) Type() string {
+	return s.Ty
+}
+
+func (s *TerraformStateSource) Index() interface{} {
+	return s.Idx
+}
+
 func (s *TerraformStateSource) InternalName() string {
 	return s.Name
+}
+
+func (s *TerraformStateSource) Address() string {
+	var addr string
+	if s.Module != "" {
+		addr = fmt.Sprintf("%s.", s.Module)
+	}
+
+	addr = fmt.Sprintf("%s%s.%s", addr, s.Type(), s.InternalName())
+	if s.Index() != nil {
+		addr = fmt.Sprintf("%s%s", addr, s.Index())
+	}
+	return addr
 }
 
 type Resource struct {

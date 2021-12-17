@@ -31,6 +31,7 @@ require (
 	github.com/hashicorp/hcl/v2 v2.7.2
 	github.com/hashicorp/terraform v0.14.0
 	github.com/hashicorp/terraform-exec v0.14.0
+	github.com/hashicorp/terraform-json v0.13.0 // indirect
 	github.com/jarcoal/httpmock v1.0.6
 	github.com/jmespath/go-jmespath v0.4.0
 	github.com/joho/godotenv v1.3.0
@@ -48,7 +49,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/yudai/gojsondiff v1.0.0
-	github.com/zclconf/go-cty v1.8.4
+	github.com/zclconf/go-cty v1.9.1
 	go.uber.org/atomic v1.4.0
 	golang.org/x/net v0.0.0-20210913180222-943fd674d43e // indirect
 	golang.org/x/oauth2 v0.0.0-20210805134026-6f1e6394065a

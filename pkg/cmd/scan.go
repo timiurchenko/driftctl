@@ -486,6 +486,20 @@ func parseOutputFlag(out string) (*output.OutputConfig, error) {
 			)
 		}
 		o.Path = opts[0]
+	case output.TerraformOutputType:
+		if len(opts) != 1 || opts[0] == "" {
+			return nil, errors.Wrapf(
+				cmderrors.NewUsageError(
+					fmt.Sprintf(
+						"\nMust be of kind: %s",
+						output.Example(output.TerraformOutputType),
+					),
+				),
+				"Invalid terraform output '%s'",
+				out,
+			)
+		}
+		o.Path = opts[0]
 	}
 
 	return o, nil

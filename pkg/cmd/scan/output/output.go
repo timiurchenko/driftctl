@@ -16,13 +16,15 @@ var supportedOutputTypes = []string{
 	JSONOutputType,
 	HTMLOutputType,
 	PlanOutputType,
+	TerraformOutputType,
 }
 
 var supportedOutputExample = map[string]string{
-	ConsoleOutputType: ConsoleOutputExample,
-	JSONOutputType:    JSONOutputExample,
-	HTMLOutputType:    HTMLOutputExample,
-	PlanOutputType:    PlanOutputExample,
+	ConsoleOutputType:   ConsoleOutputExample,
+	JSONOutputType:      JSONOutputExample,
+	HTMLOutputType:      HTMLOutputExample,
+	PlanOutputType:      PlanOutputExample,
+	TerraformOutputType: TerraformOutputType,
 }
 
 func SupportedOutputsExample() []string {
@@ -55,6 +57,8 @@ func GetOutput(config OutputConfig) Output {
 		return NewHTML(config.Path)
 	case PlanOutputType:
 		return NewPlan(config.Path)
+	case TerraformOutputType:
+		return NewTerraform(config.Path)
 	case ConsoleOutputType:
 		fallthrough
 	default:

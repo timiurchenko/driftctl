@@ -113,7 +113,8 @@ func (r *TerraformStateReader) retrieve() (map[string][]decodedRes, error) {
 				continue
 			}
 			schema := provider.Schema()[stateRes.Addr.Resource.Type]
-			for _, instance := range stateRes.Instances {
+			for key, instance := range stateRes.Instances {
+				var index interface{}
 				decodedVal, err := instance.Current.Decode(schema.Block.ImpliedType())
 				if err != nil {
 					// Try to do a manual type conversion if we got a path error
@@ -140,8 +141,11 @@ func (r *TerraformStateReader) retrieve() (map[string][]decodedRes, error) {
 					}
 				}
 				_, exists := resMap[stateRes.Addr.Resource.Type]
+				if key != nil {
+					index = key
+				}
 				val := decodedRes{
-					source: resource.NewTerraformStateSource(r.config.String(), moduleName, resName),
+					source: resource.NewTerraformStateSource(r.config.String(), moduleName, resType, resName, index),
 					val:    decodedVal.Value,
 				}
 				if !exists {
