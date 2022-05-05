@@ -29,4 +29,3 @@ resource "aws_iam_group_policy" "my_developer_policy" {
         ]
     })
 }
-
