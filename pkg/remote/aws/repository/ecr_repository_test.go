@@ -88,3 +88,54 @@ func Test_ecrRepository_ListAllRepositories(t *testing.T) {
 		})
 	}
 }
+
+func Test_ecrRepository_GetRepositoryPolicy(t *testing.T) {
+
+	tests := []struct {
+		name    string
+		mocks   func(client *awstest.MockFakeECR)
+		want    *ecr.GetRepositoryPolicyOutput
+		wantErr error
+	}{
+		{
+			name: "Get repository policy",
+			mocks: func(client *awstest.MockFakeECR) {
+				client.On("GetRepositoryPolicy",
+					mock.Anything,
+				).Return(&ecr.GetRepositoryPolicyOutput{
+					RegistryId:     aws.String("1"),
+					RepositoryName: aws.String("2"),
+				}, nil).Once()
+			},
+			want: &ecr.GetRepositoryPolicyOutput{
+				RegistryId:     aws.String("1"),
+				RepositoryName: aws.String("2"),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			client := awstest.MockFakeECR{}
+			tt.mocks(&client)
+			r := &ecrRepository{
+				client: &client,
+			}
+
+			repo := &ecr.Repository{
+				RepositoryName: aws.String("1"),
+			}
+
+			got, err := r.GetRepositoryPolicy(repo)
+			assert.Equal(t, tt.wantErr, err)
+
+			changelog, err := diff.Diff(got, tt.want)
+			assert.Nil(t, err)
+			if len(changelog) > 0 {
+				for _, change := range changelog {
+					t.Errorf("%s: %s -> %s", strings.Join(change.Path, "."), change.From, change.To)
+				}
+				t.Fail()
+			}
+		})
+	}
+}

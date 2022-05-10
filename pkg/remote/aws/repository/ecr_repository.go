@@ -9,6 +9,7 @@ import (
 
 type ECRRepository interface {
 	ListAllRepositories() ([]*ecr.Repository, error)
+	GetRepositoryPolicy(*ecr.Repository) (*ecr.GetRepositoryPolicyOutput, error)
 }
 
 type ecrRepository struct {
@@ -40,4 +41,13 @@ func (r *ecrRepository) ListAllRepositories() ([]*ecr.Repository, error) {
 
 	r.cache.Put("ecrListAllRepositories", repositories)
 	return repositories, nil
+}
+
+func (r *ecrRepository) GetRepositoryPolicy(repo *ecr.Repository) (*ecr.GetRepositoryPolicyOutput, error) {
+	var repositoryPolicyInput *ecr.GetRepositoryPolicyInput = &ecr.GetRepositoryPolicyInput{
+		RegistryId:     repo.RegistryId,
+		RepositoryName: repo.RepositoryName,
+	}
+
+	return r.client.GetRepositoryPolicy(repositoryPolicyInput)
 }
